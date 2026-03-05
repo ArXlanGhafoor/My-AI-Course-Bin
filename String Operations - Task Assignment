@@ -1,0 +1,52 @@
+# 1. Take a string from the user and print: All uppercase, All lowercase, Title case.
+
+user = input("Enter Text: ")
+print(user.upper())
+print(user.lower())
+print(user.title())
+
+# 2. Take a sentence from the user that contains extra spaces at the beginning and end. Print the sentence without those spaces.
+txt = "   Python Programming   "
+print(txt.strip())
+print(txt.lstrip())
+print(txt.rstrip())
+
+# 3. Write a program to replace Java with Python.
+txt = "I like Java"
+print(txt.replace("Java","Python"))
+
+# 4. Take a word from the user and count how many times "a" appears in the word.
+txt = "coconut"
+print(txt.count("o")) # count how many times "a" is appearing.
+print(txt.find("c")) # find the index number of "a"
+
+# 5. Write a Python program that takes two inputs from the user:
+# A sentence
+# A filename
+# Then perform the following operations:
+# i. Check whether the sentence starts with "Hello".
+# ii. Convert the sentence into a list of words.
+# iii. Find the position of the word "Python" in the sentence
+# iv. Join the list of words back into a single sentence separated by spaces.
+# v. Take another input string and check whether it contains only alphabetic characters.
+# vi. Check whether the filename ends with .txt.
+
+
+# Sentence: Hello I am learning Python programming
+# Filename: notes.txt
+
+user_input1 = input("Write a one line sentence: ")
+user_input2 = input("Write a Filename: ")
+
+print("\n")
+
+print("Starts with Hello: ", user_input1.startswith("Hello"))
+print("Sentence into List: ", user_input1.split(","))
+print("Position of words Python:", user_input1.find("Python"))
+list_into_string = user_input1.split(",")
+print("Splitted List Into String:", "".join(list_into_string))
+
+print("\n")
+
+print("Starts with Hello: ", user_input1.isalpha())
+print("Ends with txt: ", user_input2.endswith("txt"))
