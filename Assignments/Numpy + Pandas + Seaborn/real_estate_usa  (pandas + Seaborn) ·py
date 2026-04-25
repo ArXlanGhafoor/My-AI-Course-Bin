@@ -1,0 +1,180 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# =========================
+# Load Dataset
+# =========================
+# Read CSV file
+
+df = pd.read_csv("CSV Files/real_estate_data.csv")
+
+print("Raw Data:")
+print(df.head())
+
+# =========================
+# Basic Inspection
+# =========================
+print("\nData Types:")
+print(df.dtypes)
+
+print("\nInfo:")
+df.info()
+
+print("\nShape:", df.shape)
+
+# =========================
+# Data Cleaning
+# =========================
+
+# Convert date column
+df['prev_sold_date'] = pd.to_datetime(df['prev_sold_date'], errors='coerce')
+
+# Fill missing values
+# house_size is numeric → fill with median
+
+df['house_size'] = df['house_size'].fillna(df['house_size'].median(), inplace=True)
+
+# acre_lot missing → fill with mean
+df['acre_lot'] = df['acre_lot'].fillna(df['acre_lot'].mean(), inplace=True)
+
+print("\nMissing values after cleaning:")
+print(df.isnull().sum())
+
+# =========================
+# Basic Analysis (Pandas)
+# =========================
+
+# Average price by city
+city_avg = df.groupby('city')['price'].mean()
+print("\nAverage price by city:")
+print(city_avg)
+
+# Average price by state
+state_avg = df.groupby('state')['price'].mean()
+print("\nAverage price by state:")
+print(state_avg)
+
+# Top expensive houses
+print("\nTop 5 expensive houses:")
+print(df.sort_values(by='price', ascending=False).head())
+
+# Filter houses above 100k
+high_price = df[df['price'] > 100000]
+print("\nHouses above 100k:")
+print(high_price)
+
+
+# =========================
+# EDA Report
+# =========================
+print('\n=====EDA Report======\n')
+cols = ['price','acre_lot','house_size']
+for col in cols:
+    mean_value = df[col].mean()
+    median_value = df[col].median()
+    std_value = df[col].std()
+    skewness = df[col].skew()
+    diff = mean_value - median_value
+    count = df[col].value_counts()
+    sample = abs(count.max()-count.min())
+    Spread = df[col].std()/df[col].mean()*100
+
+    print(f'{col.replace("_"," ").title()}:')
+    print(f'mean_value: {mean_value:.2f}')
+    print(f'median_value: {median_value:.2f}')
+    print(f'std_value: {std_value:.2f}')
+
+    # Outlier
+    if diff < 2:
+        print(f'As Difference is {diff:.2f} So, No Outlier Exist.')
+    else:
+        print(f'As Difference is {diff:.2f} So, Outlier Exist.')
+
+    # Skewness
+    if skewness < -0.5:
+        print(f'As Skew Value is {skewness:.2f}, so Data is Left Skewed / Tilted Towards Left Side')
+    elif skewness < 0.5:
+        print(f'As Skew Value is {skewness:.2f}, so Data is Symmetric')
+    else:
+        print(f'As Skew Value is {skewness:.2f}, so Data is Right Skewed / Tilted Towards Right Side')
+
+    # Sample Balanced
+    if sample < 5:
+        print(f'As Sample Result is {sample}, so Sample is Balanced')
+    else:
+        print(f'As Sample Result is {sample}, so Sample is Unbalanced')
+
+    # Spreadness
+    if Spread < 10:
+        print(f'As Spread is {Spread:.2f}%, so Data is Tight Spread.')
+    elif Spread < 20:
+        print(f'As Spread is {Spread:.2f}%, so Data is Moderate Spread.')
+    else:
+        print(f'As Spread is {Spread:.2f}%, so Data is Wide Spreade')
+    print('\n')
+
+
+# =========================
+# Seaborn Visualizations
+# =========================
+
+sns.set_theme(style="darkgrid")
+
+# =========================
+# 1. Price Distribution
+# =========================
+sns.histplot(data=df, x='price', bins=20)
+plt.title("Price Distribution")
+plt.show()
+
+# =========================
+# 2. House Size Distribution
+# =========================
+sns.kdeplot(data=df, x='house_size', fill=True)
+plt.title("House Size Distribution")
+plt.show()
+
+# =========================
+# 3. Price vs House Size
+# =========================
+sns.scatterplot(data=df, x='house_size', y='price', hue='state')
+plt.title("Price vs House Size")
+plt.show()
+
+# =========================
+# 4. Price by City
+# =========================
+sns.barplot(data=df, x='city', y='price')
+plt.title("Average Price by City")
+plt.xticks(rotation=45)
+plt.show()
+
+# =========================
+# 5. Bedrooms vs Price
+# =========================
+sns.boxplot(data=df, x='bed', y='price')
+plt.title("Bedrooms vs Price")
+plt.show()
+
+# =========================
+# 6. Correlation Heatmap
+# =========================
+
+corr = df[['price', 'bed', 'bath', 'acre_lot', 'house_size']].corr()
+
+sns.heatmap(corr, annot=True)
+plt.title("Correlation Heatmap")
+plt.show()
+
+# =========================
+# 7. Count of Houses by State
+# =========================
+sns.countplot(data=df, x='state')
+plt.title("Number of Listings per State")
+plt.show()
+
+# =========================
+# Final Output
+# =========================
+print("\nAnalysis Completed Successfully")
